@@ -34,5 +34,19 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup>
+    <Compile Include="DTOGenerator\Faker.cs" />
+    <Compile Include="DTOGenerator\Generators\ByteGenerator.cs" />
+    <Compile Include="DTOGenerator\Generators\CharGenerator.cs" />
+    <Compile Include="DTOGenerator\Generators\DateGenerator.cs" />
+    <Compile Include="DTOGenerator\Generators\DoubleGenerator.cs" />
+    <Compile Include="DTOGenerator\Generators\FloatGenerator.cs" />
+    <Compile Include="DTOGenerator\Generators\ListGenerator.cs" />
+    <Compile Include="DTOGenerator\Generators\LongGenerator.cs" />
+    <Compile Include="DTOGenerator\Generators\StringGenerator.cs" />
+    <Compile Include="DTOGenerator\Generators\UIntGenerator.cs" />
+    <Compile Include="DTOGenerator\ICollectionGenerator.cs" />
+    <Compile Include="DTOGenerator\IGenerator.cs" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
