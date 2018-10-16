@@ -71,5 +71,56 @@ namespace DTO.DTOGenerator
             return type.IsValueType ? Activator.CreateInstance(type) : null;
 
         }
+
+        // обработка информации
+
+        public static List<ParameterInfo> GetParametersInfo(ConstructorInfo constructor)
+        {
+            return constructor.GetParameters().ToList();
+        }
+
+        public static bool IsParameterSimple(ParameterInfo parameter)
+        {
+            Type type = parameter.GetType();
+            return type.IsPrimitive || type.Equals(typeof(string));
+        }
+
+        public static List<PropertyInfo> GetSettableProperties(List<PropertyInfo> allProperties)
+        {
+            return new List<PropertyInfo>(allProperties.Where(item => !item.GetSetMethod().IsPrivate));
+        }
+
+        public static ConstructorInfo GetMaxParameterizedConstructor(List<ConstructorInfo> allConstructors)
+        {
+            if (allConstructors.Count == 0)
+            {
+                throw new InvalidOperationException("Нет конструкторов");
+            }
+
+            allConstructors = allConstructors.OrderBy(item => item.GetParameters().Length).ToList();
+            return allConstructors[0];
+        }
+
+
+
+        public object CreateByConstructor(ConstructorInfo constructor)
+        {
+
+            // получаем список параметров
+            List<ParameterInfo> parameters = GetParametersInfo(constructor);
+            object[] tmpParams = new object[parameters.Count];
+            int i = 0;
+
+            foreach (ParameterInfo parameterInfo in parameters)
+            {
+                tmpParams[i] = Generate(parameterInfo.ParameterType);
+                i++;
+            }
+
+            return constructor.Invoke(tmpParams);
+        }
+
+
+
     }
 }
