@@ -12,7 +12,7 @@ namespace DTO.DTOGenerator.Generators
 
         public ByteGenerator()
         {
-            generator = new Random;
+            generator = new Random();
         }
 
         public object Generate()

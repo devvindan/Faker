@@ -45,7 +45,7 @@ namespace DTO.DTOGenerator
             return true;
         }
 
-        public object Generate(Type type)
+        public static object Generate(Type type)
         {
             if (basicTypeGenerator.ContainsKey(type))
             {
@@ -121,7 +121,7 @@ namespace DTO.DTOGenerator
         }
 
         // создание по конструктору
-        public object CreateByConstructor(ConstructorInfo constructor)
+        public static object CreateByConstructor(ConstructorInfo constructor)
         {
 
             
@@ -139,7 +139,7 @@ namespace DTO.DTOGenerator
         }
 
         // создание по полям и свойствам
-        public object CreateByFieldsAndProperties(Type t)
+        public static object CreateByFieldsAndProperties(Type t)
         {
             object generated = Activator.CreateInstance(t);
             List<FieldInfo> fields = GetClassFieldsInfo(t);
@@ -157,7 +157,7 @@ namespace DTO.DTOGenerator
             return generated;
         }
 
-        public object Create(Type t)
+        public static object Create(Type t)
         {
             AddToRecursionList(t);
             Object result;
