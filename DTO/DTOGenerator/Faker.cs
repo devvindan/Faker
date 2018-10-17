@@ -182,7 +182,9 @@ namespace DTO.DTOGenerator
 
         public Faker()
         {
-            Assembly asm = Assembly.LoadFrom("tobedone");
+
+            String assemblyPath = "C:\\Users\\devvindan\\source\\repos\\Faker\\Plugins\\bin\\Debug\\Plugins.dll";
+            Assembly asm = Assembly.LoadFrom(assemblyPath);
 
             collectionTypeGenerator = new Dictionary<string, ICollectionGenerator>();
 
