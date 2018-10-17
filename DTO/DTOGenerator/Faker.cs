@@ -58,7 +58,7 @@ namespace DTO.DTOGenerator
 
             if (recursionList.Contains(type))
             {
-                throw new InvalidOperationException("DTO содержат друг друга в качестве полей.");
+                return null;
             }
 
 
