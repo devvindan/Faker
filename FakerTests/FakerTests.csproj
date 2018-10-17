@@ -4,10 +4,10 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{5FF934FB-3763-4BE3-9B6A-0E01EC27F71C}</ProjectGuid>
+    <ProjectGuid>{334C6DC6-4107-4290-A1CF-2E39CF9EB9DD}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>DTO</RootNamespace>
-    <AssemblyName>DTO</AssemblyName>
+    <RootNamespace>FakerTests</RootNamespace>
+    <AssemblyName>FakerTests</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -35,25 +35,18 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DTOGenerator\Faker.cs" />
-    <Compile Include="DTOGenerator\Generators\ByteGenerator.cs" />
-    <Compile Include="DTOGenerator\Generators\CharGenerator.cs" />
-    <Compile Include="DTOGenerator\Generators\DateGenerator.cs" />
-    <Compile Include="DTOGenerator\Generators\DoubleGenerator.cs" />
-    <Compile Include="DTOGenerator\Generators\FloatGenerator.cs" />
-    <Compile Include="DTOGenerator\Generators\ListGenerator.cs" />
-    <Compile Include="DTOGenerator\Generators\LongGenerator.cs" />
-    <Compile Include="DTOGenerator\Generators\StringGenerator.cs" />
-    <Compile Include="DTOGenerator\Generators\UIntGenerator.cs" />
-    <Compile Include="DTOGenerator\ICollectionGenerator.cs" />
-    <Compile Include="DTOGenerator\IGenerator.cs" />
-    <Compile Include="DTOGenerator\IPluginGenerator.cs" />
-    <Compile Include="FakerTests\FakerClass.cs" />
-    <Compile Include="FakerTests\FakerTests.cs" />
-    <Compile Include="Program.cs" />
+    <Compile Include="FakerClass.cs" />
+    <Compile Include="FakerTests.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DTO\DTO.csproj">
+      <Project>{5ff934fb-3763-4be3-9b6a-0e01ec27f71c}</Project>
+      <Name>DTO</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+    <Reference Include="Microsoft.VisualStudio.TestTools.UITest.Extension, Version=15.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
