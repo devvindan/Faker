@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DTO.DTOGenerator.Generators
 {
-    class LongGenerator
+    public class LongGenerator : IGenerator
     {
         Random generator;
 
