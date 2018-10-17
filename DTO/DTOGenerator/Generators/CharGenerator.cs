@@ -19,5 +19,10 @@ namespace DTO.DTOGenerator.Generators
         {
             return Convert.ToChar(generator.Next(65, 122));
         }
+
+        public Type GetGeneratorType()
+        {
+            return typeof(char);
+        }
     }
 }

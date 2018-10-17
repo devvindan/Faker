@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using DTO.DTOGenerator.Generators;
+using System.IO;
 
 namespace DTO.DTOGenerator
 {
@@ -12,29 +13,29 @@ namespace DTO.DTOGenerator
     {
         // Список с доступными генераторами
 
-        private static Dictionary<Type, IGenerator> basicTypeGenerator;
-        private static Dictionary<string, ICollectionGenerator> collectionTypeGenerator;
+        private Dictionary<Type, IGenerator> basicTypeGenerator;
+        private Dictionary<string, ICollectionGenerator> collectionTypeGenerator;
 
         // Для случая вложенности
 
-        private static List<Type> recursionList;
+        private List<Type> recursionList;
 
-        public static void AddToRecursionList(Type t)
+        public void AddToRecursionList(Type t)
         {
             recursionList.Add(t);
         }
 
-        public static void RemoveFromRecursionList(Type t)
+        public void RemoveFromRecursionList(Type t)
         {
             recursionList.Remove(t);
         }
 
-        public static void ClearRecursionList()
+        public void ClearRecursionList()
         {
             recursionList.Clear();
         }
 
-        public static bool checkIfDTO(Type t)
+        public bool checkIfDTO(Type t)
         {
             MethodInfo[] classMethods = t.GetMethods(BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly | BindingFlags.Static);
 
@@ -45,7 +46,7 @@ namespace DTO.DTOGenerator
             return true;
         }
 
-        public static object Generate(Type type)
+        public object Generate(Type type)
         {
             if (basicTypeGenerator.ContainsKey(type))
             {
@@ -53,9 +54,10 @@ namespace DTO.DTOGenerator
             }
             if (collectionTypeGenerator.ContainsKey(type.Name))
             {
-                return collectionTypeGenerator[type.Name].Generate(type.GenericTypeArguments[0]);
+                return collectionTypeGenerator[type.Name].Generate(type.GenericTypeArguments[0], this);
             }
 
+            // защита от зацикливания
             if (recursionList.Contains(type))
             {
                 return null;
@@ -73,43 +75,43 @@ namespace DTO.DTOGenerator
 
         }
 
-        // обработка информации
+        // обработка информации, вспомогательные функции
 
-        public static List<ParameterInfo> GetParametersInfo(ConstructorInfo constructor)
+        public List<ParameterInfo> GetParametersInfo(ConstructorInfo constructor)
         {
             return constructor.GetParameters().ToList();
         }
 
-        public static bool IsParameterSimple(ParameterInfo parameter)
+        public bool IsParameterSimple(ParameterInfo parameter)
         {
             Type type = parameter.GetType();
             return type.IsPrimitive || type.Equals(typeof(string));
         }
 
-        public static List<PropertyInfo> GetSettableProperties(List<PropertyInfo> allProperties)
+        public List<PropertyInfo> GetSettableProperties(List<PropertyInfo> allProperties)
         {
             return new List<PropertyInfo>(allProperties.Where(item => !item.GetSetMethod().IsPrivate));
         }
 
         // конструкторы, поля, свойства класса
 
-        public static List<ConstructorInfo> GetClassConstructorsInfo(Type t)
+        public List<ConstructorInfo> GetClassConstructorsInfo(Type t)
         {
             return new List<ConstructorInfo>(t.GetConstructors());
         }
 
-        public static List<PropertyInfo> GetClassPropertiesInfo(Type t)
+        public List<PropertyInfo> GetClassPropertiesInfo(Type t)
         {
             return new List<PropertyInfo>(t.GetProperties());
         }
 
-        public static List<FieldInfo> GetClassFieldsInfo(Type t)
+        public List<FieldInfo> GetClassFieldsInfo(Type t)
         {
             return new List<FieldInfo>(t.GetFields());
         }
 
         // получаем конструктор с макс. количеством параметров
-        public static ConstructorInfo GetMaxParameterizedConstructor(List<ConstructorInfo> allConstructors)
+        public ConstructorInfo GetMaxParameterizedConstructor(List<ConstructorInfo> allConstructors)
         {
             if (allConstructors.Count == 0)
             {
@@ -121,10 +123,9 @@ namespace DTO.DTOGenerator
         }
 
         // создание по конструктору
-        public static object CreateByConstructor(ConstructorInfo constructor)
+        public object CreateByConstructor(ConstructorInfo constructor)
         {
-
-            
+  
             List<ParameterInfo> parameters = GetParametersInfo(constructor);
             object[] tmpParams = new object[parameters.Count];
             int i = 0;
@@ -139,7 +140,7 @@ namespace DTO.DTOGenerator
         }
 
         // создание по полям и свойствам
-        public static object CreateByFieldsAndProperties(Type t)
+        public object CreateByFieldsAndProperties(Type t)
         {
             object generated = Activator.CreateInstance(t);
             List<FieldInfo> fields = GetClassFieldsInfo(t);
@@ -157,7 +158,7 @@ namespace DTO.DTOGenerator
             return generated;
         }
 
-        public static object Create(Type t)
+        public object Create(Type t)
         {
             AddToRecursionList(t);
             Object result;
@@ -180,34 +181,58 @@ namespace DTO.DTOGenerator
             return (T)Create(typeof(T));
         }
 
-        public Faker()
+        public Faker(string dirPath)
         {
 
-            String assemblyPath = "C:\\Users\\devvindan\\source\\repos\\Faker\\Plugins\\bin\\Debug\\Plugins.dll";
-            Assembly asm = Assembly.LoadFrom(assemblyPath);
+            List<Assembly> allAssemblies = new List<Assembly>();
+
+
+            foreach (string dll in Directory.GetFiles(dirPath, "*.dll"))
+            {
+                allAssemblies.Add(Assembly.LoadFile(dll));
+            }
 
             collectionTypeGenerator = new Dictionary<string, ICollectionGenerator>();
 
             basicTypeGenerator = new Dictionary<Type, IGenerator>();
-            basicTypeGenerator.Add(typeof(double), new DoubleGenerator());
-            basicTypeGenerator.Add(typeof(uint), new UIntGenerator());
-            basicTypeGenerator.Add(typeof(float), new FloatGenerator());
-            basicTypeGenerator.Add(typeof(char), new CharGenerator());
-            basicTypeGenerator.Add(typeof(string), new StringGenerator());
-            basicTypeGenerator.Add(typeof(long), new LongGenerator());
-            basicTypeGenerator.Add(typeof(DateTime), new DateGenerator());
 
-            var types = asm.GetTypes().Where(t => t.GetInterfaces().Where(i => i.Equals(typeof(IGenerator))).Any());
+            var doubleGenerator = new DoubleGenerator();
+            basicTypeGenerator.Add(doubleGenerator.GetGeneratorType(), doubleGenerator);
 
-            foreach (var type in types)
+            var uintGenerator = new UIntGenerator();
+            basicTypeGenerator.Add(uintGenerator.GetGeneratorType(), uintGenerator);
+
+            var floatGenerator = new FloatGenerator();
+            basicTypeGenerator.Add(floatGenerator.GetGeneratorType(), floatGenerator);
+
+            var charGenerator = new CharGenerator();
+            basicTypeGenerator.Add(charGenerator.GetGeneratorType(), charGenerator);
+
+            var stringGenerator = new StringGenerator();
+            basicTypeGenerator.Add(stringGenerator.GetGeneratorType(), stringGenerator);
+
+            var longGenerator = new LongGenerator();
+            basicTypeGenerator.Add(longGenerator.GetGeneratorType(), longGenerator);
+
+            var datetimeGenerator = new DateGenerator();
+            basicTypeGenerator.Add(datetimeGenerator.GetGeneratorType(), datetimeGenerator);
+
+            foreach (var asm in allAssemblies)
             {
-                var plugin = asm.CreateInstance(type.FullName) as IPluginGenerator;
-                Type t = plugin.GetGeneratorType();
-                if (!basicTypeGenerator.ContainsKey(t))
-                    basicTypeGenerator.Add(plugin.GetGeneratorType(), plugin as IGenerator);
-            }
+                Console.WriteLine(asm.FullName);
+                var types = asm.GetTypes().Where(t => t.GetInterfaces().Where(i => i.Equals(typeof(IGenerator))).Any());
 
-            collectionTypeGenerator.Add(typeof(List<>).Name, new ListGenerator());
+                foreach (var type in types)
+                {
+                    var plugin = asm.CreateInstance(type.FullName) as IGenerator;
+                    Type t = plugin.GetGeneratorType();
+                    if (!basicTypeGenerator.ContainsKey(t))
+                        basicTypeGenerator.Add(plugin.GetGeneratorType(), plugin);
+                }
+            } 
+
+            var listGenerator = new ListGenerator();
+            collectionTypeGenerator.Add(listGenerator.GetGeneratorType().Name, listGenerator);
 
             recursionList = new List<Type>();
         }

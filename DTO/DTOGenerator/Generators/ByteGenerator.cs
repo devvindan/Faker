@@ -20,6 +20,11 @@ namespace DTO.DTOGenerator.Generators
             return (byte)generator.Next(0, 255);
         }
 
+        public Type GetGeneratorType()
+        {
+            return typeof(byte);
+        }
+
 
     }
 }

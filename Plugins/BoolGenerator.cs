@@ -8,7 +8,7 @@ using DTO.DTOGenerator;
 
 namespace Plugins
 {
-    public class BoolGenerator : IGenerator, IPluginGenerator
+    public class BoolGenerator : IGenerator
     {
         Random generator;
 

@@ -19,5 +19,10 @@ namespace DTO.DTOGenerator.Generators
         {
             return generator.Next(int.MinValue, int.MaxValue) + generator.Next(int.MinValue, int.MaxValue);
         }
+
+        public Type GetGeneratorType()
+        {
+            return typeof(long);
+        }
     }
 }

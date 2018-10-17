@@ -47,7 +47,6 @@
     <Compile Include="DTOGenerator\Generators\UIntGenerator.cs" />
     <Compile Include="DTOGenerator\ICollectionGenerator.cs" />
     <Compile Include="DTOGenerator\IGenerator.cs" />
-    <Compile Include="DTOGenerator\IPluginGenerator.cs" />
     <Compile Include="FakerTests\FakerClass.cs" />
     <Compile Include="FakerTests\FakerTests.cs" />
     <Compile Include="Program.cs" />

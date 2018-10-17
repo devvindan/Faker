@@ -9,13 +9,18 @@ namespace DTO.DTOGenerator.Generators
 {
     public class ListGenerator : ICollectionGenerator
     {
-        public object Generate(Type t)
+        public object Generate(Type t, Faker f)
         {
             object generated = Activator.CreateInstance(typeof(List<>).MakeGenericType(t));
 
-            ((IList)generated).Add(Faker.Generate(t));
+            ((IList)generated).Add(f.Generate(t));
 
             return generated;
+        }
+
+        public Type GetGeneratorType()
+        {
+            return typeof(List<>);
         }
     }
 }

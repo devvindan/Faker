@@ -8,6 +8,11 @@ namespace DTO.DTOGenerator
 {
     public interface ICollectionGenerator
     {
-        object Generate(Type t);
+        object Generate(Type t, Faker f);
+        Type GetGeneratorType();
     }
+
+
 }
+
+//statics methods, Iplugin generator -> IGenerator, assembly

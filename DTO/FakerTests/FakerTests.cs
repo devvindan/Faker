@@ -29,7 +29,7 @@ namespace DTO.FakerTests
         [TestInitialize]
         public void SetUp()
         {
-            faker = new Faker();
+            faker = new Faker("C://Users/devvindan/source/repos/Faker/Plugins/bin/Debug");
             testClass = faker.Create<FakerClass<int>>();
         }
 
@@ -79,12 +79,6 @@ namespace DTO.FakerTests
         public void TestStringGenerator()
         {
             Assert.IsTrue(testClass.GetString != default(string));
-        }
-
-        [TestMethod]
-        public void TestBoolGenerator()
-        {
-            Assert.IsTrue(testClass.GetBool == false || testClass.GetBool == true);
         }
 
         [TestMethod]

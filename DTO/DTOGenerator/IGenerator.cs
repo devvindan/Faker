@@ -9,5 +9,7 @@ namespace DTO.DTOGenerator
     public interface IGenerator
     {
         object Generate();
+
+        Type GetGeneratorType();
     }
 }

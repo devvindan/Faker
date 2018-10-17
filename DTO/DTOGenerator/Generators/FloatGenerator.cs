@@ -19,5 +19,10 @@ namespace DTO.DTOGenerator.Generators
         {
             return (float)(generator.NextDouble() * float.MaxValue);
         }
+
+        public Type GetGeneratorType()
+        {
+            return typeof(float);
+        }
     }
 }

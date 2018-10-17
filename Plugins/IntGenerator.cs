@@ -7,7 +7,7 @@ using DTO.DTOGenerator;
 
 namespace Plugins
 {
-    class IntGenerator : IGenerator, IPluginGenerator
+    class IntGenerator : IGenerator
     {
         Random generator;
 

@@ -31,7 +31,7 @@ namespace DTO
         static void Main(string[] args)
         {
 
-            Faker faker = new Faker();
+            Faker faker = new Faker("C://Users/devvindan/source/repos/Faker/Plugins/bin/Debug");
             A c = faker.Create<A>();
 
             Console.WriteLine(c.a);

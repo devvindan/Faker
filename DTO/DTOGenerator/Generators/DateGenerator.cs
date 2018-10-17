@@ -12,5 +12,10 @@ namespace DTO.DTOGenerator.Generators
         {
             return DateTime.Now;
         }
+
+        public Type GetGeneratorType()
+        {
+            return typeof(DateTime);
+        }
     }
 }
